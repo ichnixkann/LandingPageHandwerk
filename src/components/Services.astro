@@ -1,0 +1,43 @@
+---
+import { services } from "@/data/site";
+import Icon from "./Icon.astro";
+---
+
+<section
+  id="leistungen"
+  class="mx-auto max-w-6xl px-5 py-[var(--spacing-section)]"
+  aria-labelledby="services-heading"
+>
+  <div class="max-w-2xl">
+    <p class="mb-3 text-sm font-600 tracking-wide text-brand-accent-strong uppercase">
+      Leistungen
+    </p>
+    <h2
+      id="services-heading"
+      class="font-display text-[length:var(--text-section)] leading-tight font-600"
+    >
+      Vom Glasbruch bis zur Maßanfertigung
+    </h2>
+  </div>
+
+  <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      services.map((service, i) => (
+        <article
+          class:list={[
+            "group relative flex flex-col rounded-[var(--radius-card)] border border-line bg-surface-raised p-6 transition-all hover:-translate-y-1 hover:border-brand-accent/50 hover:shadow-xl hover:shadow-brand-deep/5",
+            i === 0 && "sm:row-span-1 lg:col-span-1",
+          ]}
+        >
+          <span class="grid size-12 place-items-center rounded-xl bg-ink/5 text-ink transition-colors group-hover:bg-brand-accent group-hover:text-brand-deep">
+            <Icon name={service.icon} class="size-6" />
+          </span>
+          <h3 class="mt-5 font-display text-xl font-600">{service.title}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+            {service.description}
+          </p>
+        </article>
+      ))
+    }
+  </div>
+</section>

@@ -1,0 +1,42 @@
+---
+import { steps } from "@/data/site";
+---
+
+<section
+  id="ablauf"
+  class="border-y border-line bg-surface-raised"
+  aria-labelledby="process-heading"
+>
+  <div class="mx-auto max-w-6xl px-5 py-[var(--spacing-section)]">
+    <div class="max-w-2xl">
+      <p
+        class="mb-3 text-sm font-600 tracking-wide text-brand-accent-strong uppercase"
+      >
+        So arbeiten wir
+      </p>
+      <h2
+        id="process-heading"
+        class="font-display text-[length:var(--text-section)] leading-tight font-600"
+      >
+        Drei Schritte zu sauberem Glas
+      </h2>
+    </div>
+
+    <ol class="mt-12 grid gap-8 md:grid-cols-3">
+      {
+        steps.map((step, i) => (
+          <li class="relative">
+            <span
+              class="font-display text-5xl font-600 text-brand-accent/30"
+              aria-hidden="true"
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <h3 class="mt-2 font-display text-xl font-600">{step.title}</h3>
+            <p class="mt-2 text-ink-soft">{step.description}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

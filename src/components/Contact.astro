@@ -1,0 +1,223 @@
+---
+import { site } from "@/data/site";
+import Icon from "./Icon.astro";
+
+const details = [
+  { icon: "phone" as const, label: "Telefon", value: site.phone, href: site.phoneHref },
+  { icon: "alert" as const, label: "24/7 Notdienst", value: site.emergencyPhone, href: site.emergencyHref },
+  { icon: "pin" as const, label: "Werkstatt", value: `${site.address.street}, ${site.address.city}` },
+  { icon: "clock" as const, label: "Zeiten", value: site.hours },
+];
+
+// Public Web3Forms access key — exposed to the client on purpose.
+// Set PUBLIC_WEB3FORMS_ACCESS_KEY in .env (see .env.example).
+const accessKey =
+  import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY ?? "YOUR_WEB3FORMS_ACCESS_KEY";
+---
+
+<section
+  id="kontakt"
+  class="mx-auto max-w-6xl px-5 py-[var(--spacing-section)]"
+  aria-labelledby="contact-heading"
+>
+  <div
+    class="grid gap-10 rounded-[var(--radius-card)] bg-brand-deep p-8 text-on-deep md:grid-cols-[1fr_1fr] md:p-12"
+  >
+    <div>
+      <h2
+        id="contact-heading"
+        class="font-display text-[length:var(--text-section)] leading-tight font-600"
+      >
+        Glas kaputt oder Projekt geplant?
+      </h2>
+      <p class="mt-4 max-w-md text-on-deep/75">
+        Schreiben Sie uns kurz, worum es geht — wir melden uns in der Regel noch
+        am selben Werktag mit einem Terminvorschlag.
+      </p>
+
+      <ul class="mt-8 space-y-4">
+        {
+          details.map((d) => (
+            <li class="flex items-center gap-3">
+              <span class="grid size-10 place-items-center rounded-lg bg-on-deep/10 text-brand-glass">
+                <Icon name={d.icon} class="size-5" />
+              </span>
+              <span>
+                <span class="block text-xs tracking-wide text-on-deep/55 uppercase">
+                  {d.label}
+                </span>
+                {d.href ? (
+                  <a href={d.href} class="font-500 hover:text-brand-accent">
+                    {d.value}
+                  </a>
+                ) : (
+                  <span class="font-500">{d.value}</span>
+                )}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <!-- Form posts to Web3Forms via fetch (see <script> below) for an inline
+         success state. Requires PUBLIC_WEB3FORMS_ACCESS_KEY in .env. -->
+    <div class="relative">
+      <form
+        id="contact-form"
+        class="grid gap-4 rounded-xl bg-on-deep/[0.04] p-6"
+        method="POST"
+        action="https://api.web3forms.com/submit"
+      >
+        <input type="hidden" name="access_key" value={accessKey} />
+        <input
+          type="hidden"
+          name="subject"
+          value={`Neue Anfrage über ${site.name}`}
+        />
+        <input type="hidden" name="from_name" value={site.name} />
+
+        <!-- Honeypot: hidden from humans, bots tend to fill it. Web3Forms
+             silently drops submissions where `botcheck` is checked. -->
+        <input
+          type="checkbox"
+          name="botcheck"
+          class="hidden"
+          style="display:none"
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+        />
+
+        <label class="grid gap-1.5 text-sm">
+          <span class="text-on-deep/70">Name</span>
+          <input
+            type="text"
+            name="name"
+            required
+            autocomplete="name"
+            class="rounded-lg border border-on-deep/15 bg-on-deep/5 px-3.5 py-2.5 text-on-deep placeholder:text-on-deep/35 focus:border-brand-accent focus:outline-none"
+            placeholder="Vor- und Nachname"
+          />
+        </label>
+        <label class="grid gap-1.5 text-sm">
+          <span class="text-on-deep/70">E-Mail oder Telefon</span>
+          <input
+            type="text"
+            name="contact"
+            required
+            class="rounded-lg border border-on-deep/15 bg-on-deep/5 px-3.5 py-2.5 text-on-deep placeholder:text-on-deep/35 focus:border-brand-accent focus:outline-none"
+            placeholder="So erreichen wir Sie"
+          />
+        </label>
+        <label class="grid gap-1.5 text-sm">
+          <span class="text-on-deep/70">Ihr Anliegen</span>
+          <textarea
+            name="message"
+            rows="4"
+            required
+            class="resize-y rounded-lg border border-on-deep/15 bg-on-deep/5 px-3.5 py-2.5 text-on-deep placeholder:text-on-deep/35 focus:border-brand-accent focus:outline-none"
+            placeholder="z. B. Fensterscheibe Erdgeschoss gebrochen"></textarea>
+        </label>
+
+        <p
+          id="form-error"
+          class="hidden text-sm text-brand-accent"
+          role="alert"
+        >
+        </p>
+
+        <button
+          type="submit"
+          id="form-submit"
+          class="mt-1 rounded-full bg-brand-accent px-6 py-3 font-600 text-brand-deep transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          Anfrage senden
+        </button>
+      </form>
+
+      <!-- Success state, revealed by the script after a successful submit. -->
+      <div
+        id="form-success"
+        class="hidden flex-col items-center justify-center gap-3 rounded-xl bg-on-deep/[0.04] p-10 text-center"
+        role="status"
+        aria-live="polite"
+      >
+        <span
+          class="grid size-12 place-items-center rounded-full bg-brand-accent text-brand-deep"
+          aria-hidden="true"
+        >
+          <Icon name="shield" class="size-6" />
+        </span>
+        <p class="font-display text-xl font-600">Danke für Ihre Anfrage!</p>
+        <p class="max-w-xs text-sm text-on-deep/70">
+          Wir haben Ihre Nachricht erhalten und melden uns in der Regel noch am
+          selben Werktag bei Ihnen.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  const success = document.getElementById("form-success");
+  const errorEl = document.getElementById("form-error");
+  const submitBtn = document.getElementById(
+    "form-submit",
+  ) as HTMLButtonElement | null;
+
+  if (form && success && errorEl && submitBtn) {
+    const showError = (msg: string) => {
+      errorEl.textContent = msg;
+      errorEl.classList.remove("hidden");
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      errorEl.classList.add("hidden");
+
+      const accessKey = (
+        form.elements.namedItem("access_key") as HTMLInputElement
+      )?.value;
+      if (!accessKey || accessKey === "YOUR_WEB3FORMS_ACCESS_KEY") {
+        showError(
+          "Formular noch nicht konfiguriert (Web3Forms-Key fehlt).",
+        );
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const original = submitBtn.textContent;
+      submitBtn.textContent = "Wird gesendet …";
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          headers: { Accept: "application/json" },
+          body: new FormData(form),
+        });
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          form.classList.add("hidden");
+          success.classList.remove("hidden");
+          success.classList.add("flex");
+          success.focus?.();
+        } else {
+          showError(
+            data.message ??
+              "Senden fehlgeschlagen. Bitte rufen Sie uns an.",
+          );
+        }
+      } catch {
+        showError(
+          "Netzwerkfehler. Bitte versuchen Sie es erneut oder rufen Sie uns an.",
+        );
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = original;
+      }
+    });
+  }
+</script>

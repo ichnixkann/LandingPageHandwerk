@@ -1,0 +1,16 @@
+---
+import { site } from "@/data/site";
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line bg-surface">
+  <div
+    class="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-8 text-sm text-ink-soft sm:flex-row sm:items-center sm:justify-between"
+  >
+    <p>© {year} {site.author} · {site.name}</p>
+    <nav aria-label="Rechtliches" class="flex gap-6">
+      <a href="#" class="hover:text-ink">Impressum</a>
+      <a href="#" class="hover:text-ink">Datenschutz</a>
+    </nav>
+  </div>
+</footer>
